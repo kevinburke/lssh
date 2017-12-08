@@ -94,16 +94,16 @@ func ConnectSshTerminal(connectServer string, confList conf.Config) int {
 		// Golang time.format YYYYmmdd_HHMMSS = "20060102_150405".(https://golang.org/src/time/format.go)
 		logFile := time.Now().Format("20060102_150405") + "_" + connectServer + ".log"
 		logFilePATH := logDirPath + "/" + logFile
-		//awkCmd := ">(awk '{print strftime(\"%F %T \") $0}{fflush()}'>>" + logFilePATH + ")"
+		awkCmd := ">(awk '{print strftime(\"%F %T \") $0}{fflush()}'>>" + logFilePATH + ")"
 
 		// OS check
 		if execOS == "linux" || execOS == "android" {
 			execCmd = append([]string{"/usr/bin/script", "-qf", "-c"}, sshCmd...)
-			execCmd = append(execCmd, []string{logFilePATH}...)
+			execCmd = append(execCmd, []string{awkCmd}...)
 			//execCmd = []string{"/usr/bin/script", "-qf", "-c", strings.Join(sshCmd, " "), awkCmd}
 			//execCmd = []string{"/usr/bin/script", "-qf", "-c", sshCmd, awkCmd}
 		} else {
-			execCmd = append([]string{"/usr/bin/script", "-qF", logFilePATH}, sshCmd...)
+			execCmd = append([]string{"/usr/bin/script", "-qF", awkCmd}, sshCmd...)
 			//execCmd = []string{"/usr/bin/script", "-qF", awkCmd, strings.Join(sshCmd, " ")}
 			//execCmd = []string{"/usr/bin/script", "-qF", awkCmd, sshCmd}
 		}
